@@ -180,6 +180,6 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
             carLocations[i] = (frontWheel[i] + backWheel[i]) / 2
         carHeadings = math.atan2(frontWheel[1] - backWheel[1], frontWheel[0] - backWheel[0])
 
-        print("Front Wheel: ", frontWheel)
-        print("Back Wheel: ", backWheel)
+        # print("Front Wheel: ", frontWheel)
+        # print("Back Wheel: ", backWheel)
         print("Steering Angles: ", steerAngles)
