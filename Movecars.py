@@ -16,13 +16,13 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
     carHeadings = env.start_headings  # Car Initial Heading Counter Clock Wise[Degrees]
     steerAngles = env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
 
-    timesteps = 1
-    Old_Locations = []
-    for i in range(int(nbrOfTimeStepsToTimeout) - 1):
-        l = []
-        for j in range(2):
-            l.append(0)
-        Old_Locations.append(l)
+    # timesteps = 1
+    # Old_Locations = []
+    # for i in range(int(nbrOfTimeStepsToTimeout) - 1):
+    #     l = []
+    #     for j in range(2):
+    #         l.append(0)
+    #     Old_Locations.append(l)
 
     Generation_ids = 0
     Chromosome_ids = 1
@@ -70,30 +70,30 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         Fitness += 1
         # If car is almost in same place after nbrOfTimeStepsToTimeout has passed, set rotating_around_my_self_bool
         rotating_around_my_self_bool = 0
-        if (LifeTimes >= nbrOfTimeStepsToTimeout):
-            Old_Locations.append(carLocations)
-            mean_x = statistics.mean(Old_Locations[:][0])
-            mean_y = statistics.mean(Old_Locations[:][1])
-            x = Old_Locations[0]
-            for i in range(len(x)):
-                try:
-                    x[i] = math.pow((x[i] - mean_x), 2)
-                except OverflowError:
-                    x[i] = float('inf')
-                var_x = statistics.mean(x)  # numpy.mean(( - mean_x) ^ 2)
-                x = Old_Locations[1]
-                for i in range(len(x)):
-                    try:
-                        x[i] = math.pow((x[i] - mean_y), 2)
-                    except OverflowError:
-                        x[i] = float('inf')
-                var_y = statistics.mean(x)
-
-                if var_x <= smallXYVariance and var_y <= smallXYVariance:
-                    rotating_around_my_self_bool = 1
-        else:
-            Old_Locations[LifeTimes - 1][0] = carLocations[0]
-            Old_Locations[LifeTimes - 1][1] = carLocations[1]
+        # if (LifeTimes >= nbrOfTimeStepsToTimeout):
+        #     Old_Locations.append(carLocations)
+        #     mean_x = statistics.mean(Old_Locations[:][0])
+        #     mean_y = statistics.mean(Old_Locations[:][1])
+        #     x = Old_Locations[0]
+        #     for i in range(len(x)):
+        #         try:
+        #             x[i] = math.pow((x[i] - mean_x), 2)
+        #         except OverflowError:
+        #             x[i] = float('inf')
+        #         var_x = statistics.mean(x)  # numpy.mean(( - mean_x) ^ 2)
+        #         x = Old_Locations[1]
+        #         for i in range(len(x)):
+        #             try:
+        #                 x[i] = math.pow((x[i] - mean_y), 2)
+        #             except OverflowError:
+        #                 x[i] = float('inf')
+        #         var_y = statistics.mean(x)
+        #
+        #         if var_x <= smallXYVariance and var_y <= smallXYVariance:
+        #             rotating_around_my_self_bool = 1
+        # else:
+        #     Old_Locations[LifeTimes - 1][0] = carLocations[0]
+        #     Old_Locations[LifeTimes - 1][1] = carLocations[1]
 
         if (collison_bools):
             if (Fitness > max(Chromosomes_Fitness)):
