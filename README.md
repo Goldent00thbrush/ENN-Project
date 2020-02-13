@@ -34,9 +34,9 @@ corssoverProb_mean_percent
 corssoverProb_stdDev_percent
 mutationProb
 selection_option  # 0(Tournament) or  1 (Truncation)
-tournament_size # 0: All children replace parents unless best ceil(PercentBestParentsToKeep), 1: Use good parents based on tournaments and add other children, 2: Use good parents
+tournament_size 
 truncation_percentage
-replacement_option
+replacement_option # 0: All children replace parents unless best ceil(PercentBestParentsToKeep), 1: Use good parents based on tournaments and add other children, 2: Use good parents
 PercentBestParentsToKeep 
 keptParentsAreGolobal_option
 weightsRange #Intially wights are random following a uniform distrubution from -weightsRange to weightsRange. Mutation adds random weights follwoing the same distribution.
