@@ -36,12 +36,10 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
     All_Chromosomes_Fitness = []
     for i in range(GA.populationSize):
         l = []
-        l2 = []
         for j in range(GA.chromosomeLength):
             l.append(0)
-            l2.append(0)
         All_Chromosomes.append(l)
-        All_Chromosomes_Fitness.append(l2)
+        All_Chromosomes_Fitness.append(0)
 
     # Iterating Generations
     while (1):
@@ -113,7 +111,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 Chromosome_ids = Chromosome_ids + 1
 
         elif (rotating_around_my_self_bool == 1):
-            All_Chromosomes_Fitness[0][Chromosome_ids] = 0  # TODO Is this good ?
+            All_Chromosomes_Fitness[Chromosome_ids] = 0  # TODO Is this good ?
             ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
 
             if (Car_Finished_Pool != 1):
@@ -130,13 +128,13 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 All_Chromosomes[(i - 1) * GA.populationSize: i * GA.populationSize] = Chromosomes
                 x = 0
                 for i in range((i - 1) * GA.populationSize, i * GA.populationSize):
-                    All_Chromosomes_Fitness[i][y] = Chromosomes_Fitness[x]
+                    All_Chromosomes_Fitness[i] = Chromosomes_Fitness[x]
                     x += 1
 
                 y += 1
                 tmp = All_Chromosomes_Fitness.copy()
                 idx = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
-                idx2 = numpy.array(idx).tolist()[0][0:nbrOfParentsToKeep]
+                idx2 = numpy.array(idx).tolist()[0:nbrOfParentsToKeep]
                 ParentsToKeep = []
                 for i in range(len(idx2)):
                     ParentsToKeep.append(All_Chromosomes[idx2[i]])
