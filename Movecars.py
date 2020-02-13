@@ -22,16 +22,18 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
     #         l.append(0)
     #     Old_Locations.append(l)
 
-    Generation_ids = 0
-    Chromosome_ids = 1
-    timeStepsDone = 0
+    Generation_ids = 0 #At which generation
+    Chromosome_ids = 1 #At which chromosome
+    timeStepsDone = 0 #How many time steps passed
     prev_carLines = []
     BestFitnessChromoID = 1
     Car_Finished_Pool = 0
-    nbrOfParentsToKeep = math.ceil(GA.PercentBestParentsToKeep * GA.populationSize / 100)
+    nbrOfParentsToKeep = math.ceil(GA.PercentBestParentsToKeep * GA.populationSize / 100) #For replacement
 
-    All_Chromosomes = []
-    All_Chromosomes_Fitness = []
+    All_Chromosomes = [] #All chromosome weights
+    All_Chromosomes_Fitness = [] #Fitness of each chromosome (in terms of time)
+
+    #To store things from surviving chromosomes in later on
     for i in range(GA.populationSize):
         l = []
         for j in range(GA.chromosomeLength):
@@ -49,7 +51,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         for i in range(sensor.size):
             sensor_readings.append(int(input()))
 
-        dist = min(sensor_readings)
+        dist = min(sensor_readings)  #will be used to determines if there is a collision
         id = sensor_readings.index(dist)
 
         collison_bools = False
@@ -63,7 +65,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         # Increase lifetimes by 1
 
         # Update Fitness
-        Fitness = LifeTimes
+        Fitness = LifeTimes #fitness used as a measure of time steps (steps is an iteration of this while loop)
         LifeTimes = LifeTimes + 1
         Fitness += 1
         # If car is almost in same place after nbrOfTimeStepsToTimeout has passed, set rotating_around_my_self_bool
@@ -99,7 +101,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
 
             Chromosomes_Fitness[Chromosome_ids] = Fitness
 
-            if (Fitness >= GA.goodFitness):
+            if (Fitness >= GA.goodFitness):  #if fitness is better than good fitness, save it
                 Car_Finished_Pool = 1
                 BestFitnessChromoID = Chromosome_ids
 
