@@ -56,10 +56,17 @@ class CarSettings:
         self.speed = speed
 
 class SensorSettings:
-    def __init__(self,angles, range, sensor_dot_radius_ratio):
-        self.angles = angles
+    def __init__(self, range, sensor_dot_radius_ratio):
+        # self.angles = angles
         self.range = range
         self.sensor_dot_radius_ratio = sensor_dot_radius_ratio
+
+    def sensor_size(self):
+            self.size= int(input("Enter the number of beams: "))
+            if (self.size < 0):
+                while self.size < 0:
+                    self.size= int(input("Enter the number of beams: "))
+
 
 class EnvSettings:
     def __init__(self, nbrOfCars, dx_dy, intial_point, start_points,destination_dot_radius_ratio ):
@@ -77,13 +84,14 @@ settings_obj = settings(3,2,0,0.1,5,math.pow(8,2),100,10)
 GA = GenticAlgorithmSettings( 100,2000,5,95, 5, 0.10, 0, 10,40,0,10, 1,1,0)
 car = CarSettings(2.6, 2.5,4.3,0.45,0.22,10)
 
-angles = [0,10,20,30 ,40 ,50 ,60 ,70 ,80 ,90 ,100 ,110, 120, 130, 140, 150, 160, 170, 180]
-for i in range(len(angles)):
-    angles[i] = angles[i] * math.pi / 180
-sensor = SensorSettings(angles,25,0.05)
+# angles = [0,10,20,30 ,40 ,50 ,60 ,70 ,80 ,90 ,100 ,110, 120, 130, 140, 150, 160, 170, 180]
+# for i in range(len(angles)):
+#     angles[i] = angles[i] * math.pi / 180
+sensor = SensorSettings(25,0.05) #angles,25,0.05)
+sensor.sensor_size()
 env = EnvSettings(1,[settings_obj.num, settings_obj.num, - settings_obj.num, - settings_obj.num], [0,0],[20,30],1)
 
-settings_obj.set_nbrOfInputNodes_NetworkArch(len(sensor.angles))
+settings_obj.set_nbrOfInputNodes_NetworkArch(sensor.size)
 
 previousNbrOfNeurons = settings_obj.NetworkArch[0]
 for i in range(1,len(settings_obj.NetworkArch)): #length of chromosome based on Network Architecture - number of nodes and biases
