@@ -1,8 +1,6 @@
-import statistics
 import math
 import numpy
 
-from ResetCarAndLifeTime import ResetCarAndLifeTime
 from ApplyGA import ApplyGA
 from Feedforward import Feedforward
 
@@ -105,14 +103,14 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 Car_Finished_Pool = 1
                 BestFitnessChromoID = Chromosome_ids
 
-            ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
 
         elif (rotating_around_my_self_bool == 1):
             All_Chromosomes_Fitness[Chromosome_ids] = 0  # TODO Is this good ?
-            ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
