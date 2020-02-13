@@ -13,7 +13,7 @@ def Feedforward(Sample, Chromosome, Network_Arch, unipolarBipolarSelector):
         d1 = len(activations)
         d2 = Network_Arch[Layer]
         weights = Chromosome[startId: startId + d1 * d2]
-        print(len(weights))
+        #print(len(weights))
         weights2 = []
         idx = 0
         for i in range(int(len(weights) / v)):

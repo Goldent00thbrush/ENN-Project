@@ -36,10 +36,12 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
     All_Chromosomes_Fitness = []
     for i in range(GA.populationSize):
         l = []
+        l2 = []
         for j in range(GA.chromosomeLength):
             l.append(0)
+            l2.append(0)
         All_Chromosomes.append(l)
-        All_Chromosomes_Fitness.append(l)
+        All_Chromosomes_Fitness.append(l2)
 
     # Iterating Generations
     while (1):
