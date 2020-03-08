@@ -12,10 +12,10 @@ NUMBER_BEAMS = 19 #for model
 def run(path):
     '''Main function'''
     lidar = RPLidar(PORT_NAME)
-    outfile = open(path, 'r+')
     try:
         print('Recording measurments... Press Crl+C to stop.')
         for scan in lidar.iter_scans():
+    	    outfile = open(path, 'r+')
             count = 0
             outfile.seek(0)
             outfile.truncate(0)
@@ -26,6 +26,7 @@ def run(path):
                     line = line + '\n'
                     count = count + 1
             outfile.write(line )
+	    outfile.close()
     except KeyboardInterrupt:
         print('Stoping.')
     lidar.stop()

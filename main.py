@@ -1,5 +1,6 @@
 #classes to encapsulate all the data needed
 import numpy
+import sys
 from numpy.matlib import rand, math
 
 from Movecars import MoveCars
@@ -23,8 +24,8 @@ class settings:
         self.NetworkArch = [self.nbrOfInputNodes,self.nbrOfNeuronsInEachHiddenLayer, self.nbrOfOutNodes]
         self.nbrOfTimeStepsToTimeout = self.timeout / self.dt
 
-    def collison_value(self): #Ask user what is the minumum distance that is considered a collision ?
-        self.collision_distance = int(input("Enter minimum distance for collision: "))
+    def collison_value(self,value): #Ask user what is the minumum distance that is considered a collision ?
+        self.collision_distance = value
         if (self.collision_distance <0):
             while self.collision_distance <0:
                 self.collision_distance = int(input("Enter minimum distance for collision: "))
@@ -67,8 +68,8 @@ class SensorSettings:
         self.range = range
         self.sensor_dot_radius_ratio = sensor_dot_radius_ratio
 
-    def sensor_size(self):
-            self.size= int(input("Enter the number of beams: "))
+    def sensor_size(self, value):
+            self.size= value
             if (self.size < 0):
                 while self.size < 0:
                     self.size= int(input("Enter the number of beams: "))
@@ -95,7 +96,7 @@ car = CarSettings(2.6, 2.5,4.3,0.45,0.22,10)
 # for i in range(len(angles)):
 #     angles[i] = angles[i] * math.pi / 180
 sensor = SensorSettings(25,0.05) #angles,25,0.05)
-sensor.sensor_size()
+sensor.sensor_size(int(sys.argv[3]))
 env = EnvSettings(1,[settings_obj.num, settings_obj.num, - settings_obj.num, - settings_obj.num], [0,0],[20,30],1)
 
 settings_obj.set_nbrOfInputNodes_NetworkArch(sensor.size)
@@ -128,7 +129,7 @@ for pop in range(GA.populationSize):
     l = numpy.array(GA.weightsRange * (2 * rand(1, GA.chromosomeLength) - 1)).reshape(-1,).tolist()# -1<value<1
     Chromosomes.append(l)
 
-settings_obj.collison_value()
+settings_obj.collison_value(int(sys.argv[2]))
 
 MoveCars(env, settings_obj.nbrOfTimeStepsToTimeout, GA, settings_obj.dt,sensor, car, settings_obj.num,
          settings_obj.smallXYVariance, Chromosomes_Fitness, Chromosomes, settings_obj.NetworkArch, settings_obj.unipolarBipolarSelector, settings_obj.collision_distance)

@@ -1,6 +1,8 @@
 import math
 import numpy
-
+import sys 
+import time
+import pdb
 from ApplyGA import ApplyGA
 from Feedforward import Feedforward
 
@@ -8,6 +10,20 @@ from Feedforward import Feedforward
 #  Prerequisites  Chromosomes,  Chromosomes_Fitness
 # Outputs  Fitness(standing vector: an element for each car)
 # Initializations
+def read_lidar(path):
+	try:
+		outfile = open(path, 'r')
+	except IOError:
+		read_lidar(path)
+	with outfile:
+		s = outfile.readlines()
+		outfile.close()	
+		data = []
+		for line in s:
+			reading = line.split('\t')
+			data.append(float(reading[2]))
+		return data
+
 def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes,
              Network_Arch, unipolarBipolarSelector, collison_value):
     carLocations = env.start_points  # Car Initial Location[X, Y] in [Meters]
@@ -47,10 +63,10 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         LifeTimes = 0  # In number of draw steps(multiple of GA.dt)
         sensor_readings = []
         y = 0
-        print("Sensor readings: ")  ###############input sensor readings with angles - spectrum - distance
-        for i in range(sensor.size):
-            sensor_readings.append(int(input()))
-
+        
+	sensor_readings = read_lidar(sys.argv[1])
+	while (sensor_readings == []):
+		sensor_readings = read_lidar(sys.argv[1])
         dist = min(sensor_readings)  #will be used to determines if there is a collision
         id = sensor_readings.index(dist)
 
