@@ -10,20 +10,13 @@ from Feedforward import Feedforward
 #  Prerequisites  Chromosomes,  Chromosomes_Fitness
 # Outputs  Fitness(standing vector: an element for each car)
 # Initializations
-def read_lidar(path):
-	try:
-		outfile = open(path, 'r')
-	except IOError:
-		read_lidar(path)
-	with outfile:
-		s = outfile.readlines()
-		outfile.close()	
-		data = []
-		for line in s:
-			reading = line.split('\t')
-			if (float(reading[2])!= 0.0):
-			 data.append(float(reading[2]))
-		return data
+def read_lidar(x):
+    data = []
+    for i in range(19):
+        if (float(x[i])!= 0.0):
+         data.append(float(x[i]))
+    return data
+
 def write_flag(path,value):
 	try:
 		outfile = open(path, 'r+')
