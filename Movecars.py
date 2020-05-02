@@ -1,6 +1,8 @@
 import math
 import numpy
-
+import sys 
+import time
+import pdb
 from ApplyGA import ApplyGA
 from Feedforward import Feedforward
 
@@ -8,11 +10,30 @@ from Feedforward import Feedforward
 #  Prerequisites  Chromosomes,  Chromosomes_Fitness
 # Outputs  Fitness(standing vector: an element for each car)
 # Initializations
+def read_lidar(x):
+    data = []
+    for i in range(19):
+        if (float(x[i])!= 0.0):
+         data.append(float(x[i]))
+    return data
+
+def write_flag(path,value):
+	try:
+		outfile = open(path, 'r+')
+	except IOError:
+		read_lidar(path)
+	with outfile:
+		outfile.seek(0)
+		outfile.truncate(0)
+		outfile.write(str(value))
+		outfile.close()	
+		
+
 def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes,
              Network_Arch, unipolarBipolarSelector, collison_value):
     carLocations = env.start_points  # Car Initial Location[X, Y] in [Meters]
     carHeadings = env.start_headings  # Car Initial Heading Counter Clock Wise[Degrees]
-    steerAngles = env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
+    steerAngles = 0 #env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
 
     # timesteps = 1
     # Old_Locations = []
@@ -47,10 +68,9 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         LifeTimes = 0  # In number of draw steps(multiple of GA.dt)
         sensor_readings = []
         y = 0
-        print("Sensor readings: ")  ###############input sensor readings with angles - spectrum - distance
-        for i in range(sensor.size):
-            sensor_readings.append(int(input()))
-
+        sensor_readings = read_lidar(sys.argv[1])
+        while(sensor_readings == []):
+          sensor_readings = read_lidar(sys.argv[1])
         dist = min(sensor_readings)  #will be used to determines if there is a collision
         id = sensor_readings.index(dist)
 
@@ -106,6 +126,11 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 BestFitnessChromoID = Chromosome_ids
 
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            LifeTimes = 0
+            steerAngles = [0]
+            carHeadings = 0
+            carLocations = 0
+            prev_carLines = 0
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
@@ -113,6 +138,11 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         elif (rotating_around_my_self_bool == 1):
             All_Chromosomes_Fitness[Chromosome_ids] = 0  # TODO Is this good ?
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            LifeTimes = 0
+            steerAngles = [0]
+            carHeadings = 0
+            carLocations = 0
+            prev_carLines = 0
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
@@ -167,6 +197,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
 
         outputs = Feedforward(sensor_readings, current_chromosome, Network_Arch, unipolarBipolarSelector)
         steerAngles = numpy.pi / 2 * (outputs[1] - outputs[0])  # From - 90 to 90 degrees
+
         frontWheel = []
         backWheel = []
         # 2D car steering physics(Calculate carLocation and carHeading)
@@ -181,7 +212,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         for i in range(len(carLocations)):
             carLocations[i] = (frontWheel[i] + backWheel[i]) / 2
         carHeadings = math.atan2(frontWheel[1] - backWheel[1], frontWheel[0] - backWheel[0])
-
+        write_flag(sys.argv[4],steerAngles)
         # print("Front Wheel: ", frontWheel)
         # print("Back Wheel: ", backWheel)
         print("Steering Angles: ", steerAngles)
