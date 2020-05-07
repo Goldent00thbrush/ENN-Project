@@ -131,7 +131,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
             carHeadings = 0
             carLocations = 0
             prev_carLines = 0
-
+            #HAL
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
 
@@ -212,7 +212,11 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         for i in range(len(carLocations)):
             carLocations[i] = (frontWheel[i] + backWheel[i]) / 2
         carHeadings = math.atan2(frontWheel[1] - backWheel[1], frontWheel[0] - backWheel[0])
-        write_flag(sys.argv[4],steerAngles)
+        if (collison_bools == true):
+            write_flag(sys.argv[4],0.0)
+            time.sleep(75) #in seconds
+        else:
+            write_flag(sys.argv[4],steerAngles)
         # print("Front Wheel: ", frontWheel)
         # print("Back Wheel: ", backWheel)
         print("Steering Angles: ", steerAngles)
