@@ -39,7 +39,7 @@ def write_flag(path, value):
 
 def write_chromo(path, chromo2darray):
     try:
-        outfile = open(path, 'r+')
+        outfile = open(path, 'a')
     except IOError:
         read_lidar(path)
     with outfile:
