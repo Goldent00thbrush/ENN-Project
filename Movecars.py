@@ -1,6 +1,6 @@
 import math
 import numpy
-import sys 
+import sys
 import time
 import pdb
 from ApplyGA import ApplyGA
@@ -10,30 +10,39 @@ from Feedforward import Feedforward
 #  Prerequisites  Chromosomes,  Chromosomes_Fitness
 # Outputs  Fitness(standing vector: an element for each car)
 # Initializations
-def read_lidar(x):
-    data = []
-    for i in range(19):
-        if (float(x[i])!= 0.0):
-         data.append(float(x[i]))
-    return data
+def read_lidar(path):
+    try:
+        outfile = open(path, 'r')
+    except IOError:
+        read_lidar(path)
+    with outfile:
+        s = outfile.readlines()
+        outfile.close()
+        data = []
+        for line in s:
+            reading = line.split('\t')
+            if (float(reading[2]) != 0.0):
+                data.append(float(reading[2]))
+        return data
 
-def write_flag(path,value):
-	try:
-		outfile = open(path, 'r+')
-	except IOError:
-		read_lidar(path)
-	with outfile:
-		outfile.seek(0)
-		outfile.truncate(0)
-		outfile.write(str(value))
-		outfile.close()	
-		
+
+def write_flag(path, value):
+    try:
+        outfile = open(path, 'r+')
+    except IOError:
+        read_lidar(path)
+    with outfile:
+        outfile.seek(0)
+        outfile.truncate(0)
+        outfile.write(str(value))
+        outfile.close()
+
 
 def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes,
              Network_Arch, unipolarBipolarSelector, collison_value):
     carLocations = env.start_points  # Car Initial Location[X, Y] in [Meters]
     carHeadings = env.start_headings  # Car Initial Heading Counter Clock Wise[Degrees]
-    steerAngles = 0 #env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
+    steerAngles = 0  # env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
 
     # timesteps = 1
     # Old_Locations = []
@@ -43,18 +52,18 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
     #         l.append(0)
     #     Old_Locations.append(l)
 
-    Generation_ids = 0 #At which generation
-    Chromosome_ids = 1 #At which chromosome
-    timeStepsDone = 0 #How many time steps passed
+    Generation_ids = 0  # At which generation
+    Chromosome_ids = 1  # At which chromosome
+    timeStepsDone = 0  # How many time steps passed
     prev_carLines = []
     BestFitnessChromoID = 1
     Car_Finished_Pool = 0
-    nbrOfParentsToKeep = math.ceil(GA.PercentBestParentsToKeep * GA.populationSize / 100) #For replacement
+    nbrOfParentsToKeep = math.ceil(GA.PercentBestParentsToKeep * GA.populationSize / 100)  # For replacement
 
-    All_Chromosomes = [] #All chromosome weights
-    All_Chromosomes_Fitness = [] #Fitness of each chromosome (in terms of time)
+    All_Chromosomes = []  # All chromosome weights
+    All_Chromosomes_Fitness = []  # Fitness of each chromosome (in terms of time)
 
-    #To store things from surviving chromosomes in later on
+    # To store things from surviving chromosomes in later on
     for i in range(GA.populationSize):
         l = []
         for j in range(GA.chromosomeLength):
@@ -69,9 +78,9 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         sensor_readings = []
         y = 0
         sensor_readings = read_lidar(sys.argv[1])
-        while(sensor_readings == []):
-          sensor_readings = read_lidar(sys.argv[1])
-        dist = min(sensor_readings)  #will be used to determines if there is a collision
+        while (sensor_readings == []):
+            sensor_readings = read_lidar(sys.argv[1])
+        dist = min(sensor_readings)  # will be used to determines if there is a collision
         id = sensor_readings.index(dist)
 
         collison_bools = False
@@ -85,7 +94,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         # Increase lifetimes by 1
 
         # Update Fitness
-        Fitness = LifeTimes #fitness used as a measure of time steps (steps is an iteration of this while loop)
+        Fitness = LifeTimes  # fitness used as a measure of time steps (steps is an iteration of this while loop)
         LifeTimes = LifeTimes + 1
         Fitness += 1
         # If car is almost in same place after nbrOfTimeStepsToTimeout has passed, set rotating_around_my_self_bool
@@ -121,28 +130,18 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
 
             Chromosomes_Fitness[Chromosome_ids] = Fitness
 
-            if (Fitness >= GA.goodFitness):  #if fitness is better than good fitness, save it
+            if (Fitness >= GA.goodFitness):  # if fitness is better than good fitness, save it
                 Car_Finished_Pool = 1
                 BestFitnessChromoID = Chromosome_ids
 
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
-            LifeTimes = 0
-            steerAngles = [0]
-            carHeadings = 0
-            carLocations = 0
-            prev_carLines = 0
-            #HAL
+
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
 
         elif (rotating_around_my_self_bool == 1):
             All_Chromosomes_Fitness[Chromosome_ids] = 0  # TODO Is this good ?
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
-            LifeTimes = 0
-            steerAngles = [0]
-            carHeadings = 0
-            carLocations = 0
-            prev_carLines = 0
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
@@ -213,10 +212,10 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
             carLocations[i] = (frontWheel[i] + backWheel[i]) / 2
         carHeadings = math.atan2(frontWheel[1] - backWheel[1], frontWheel[0] - backWheel[0])
         if (collison_bools == true):
-            write_flag(sys.argv[4],0.0)
-            time.sleep(75) #in seconds
+            write_flag(sys.argv[4], 0.0)
+            time.sleep(75)  # in seconds
         else:
-            write_flag(sys.argv[4],steerAngles)
+            write_flag(sys.argv[4], steerAngles)
         # print("Front Wheel: ", frontWheel)
         # print("Back Wheel: ", backWheel)
         print("Steering Angles: ", steerAngles)
