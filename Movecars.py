@@ -43,8 +43,6 @@ def write_chromo(path, chromo2darray):
     except IOError:
         read_lidar(path)
     with outfile:
-        outfile.seek(0)
-        outfile.truncate(0)
         s = str()
         for chromo in chromo2darray:
             c ='['
