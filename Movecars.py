@@ -37,6 +37,23 @@ def write_flag(path, value):
         outfile.write(str(value))
         outfile.close()
 
+def write_chromo(path, chromo2darray):
+    try:
+        outfile = open(path, 'r+')
+    except IOError:
+        read_lidar(path)
+    with outfile:
+        outfile.seek(0)
+        outfile.truncate(0)
+        s = str()
+        for chromo in chromo2darray:
+            c ='['
+            for x in chromo:
+                c += (x+',')
+            c += ']\n'
+            s += c
+        outfile.write(s)
+        outfile.close()
 
 def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes,
              Network_Arch, unipolarBipolarSelector, collison_value):
@@ -135,6 +152,17 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 BestFitnessChromoID = Chromosome_ids
 
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            LifeTimes = 0
+            steerAngles = [0]
+            carHeadings = 0
+            carLocations = 0
+            prev_carLines = 0
+
+            Bestchromlist = []
+            Bestchromlist_idx = numpy.argsort(Chromosomes_Fitness)
+            for i in Bestchromlist_idx:
+                Bestchromlist.append(Chromosomes[i])
+            write_chromo(sys.argv[5],Bestchromlist)
 
             if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
@@ -142,8 +170,19 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         elif (rotating_around_my_self_bool == 1):
             All_Chromosomes_Fitness[Chromosome_ids] = 0  # TODO Is this good ?
             # ResetCarAndLifeTime(carLocations, env, 0, carHeadings, steerAngles, LifeTimes, prev_carLines)
+            LifeTimes = 0
+            steerAngles = [0]
+            carHeadings = 0
+            carLocations = 0
+            prev_carLines = 0
 
-            if (Car_Finished_Pool != 1):
+            Bestchromlist = []
+            Bestchromlist_idx = numpy.argsort(Chromosomes_Fitness)
+            for i in Bestchromlist_idx:
+                Bestchromlist.append(Chromosomes[i])
+            write_chromo(sys.argv[5], Bestchromlist)
+
+        if (Car_Finished_Pool != 1):
                 Chromosome_ids = Chromosome_ids + 1
             rotating_around_my_self_bool = 0
 
