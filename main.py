@@ -84,6 +84,15 @@ class EnvSettings:
         self.start_steerAngles = [0] # is it a bunch of zeros ?????????????????????????????
         self.destination_dot_radius_ratio = destination_dot_radius_ratio
 
+def read_chromo(path):
+    try:
+        outfile = open(path, 'r')
+    except IOError:
+        read_lidar(path)
+    with outfile:
+        s = outfile.readlines()
+        outfile.close()
+        return s
 
 #object decelerations and variables
 #0 => nbrOfNeuronsInEachHiddenLayer...
@@ -123,10 +132,19 @@ for i in range(GA.nbrOfGenerations_max):
     BestFitness_perGeneration.append(-1) #intialize with -1
     AvgFitness_perGeneration.append(-1) #intialize with -1
 
-#Initializing chromosomes weights range with values from -1 to 1
-for pop in range(GA.populationSize):
-    l = numpy.array(GA.weightsRange * (2 * rand(1, GA.chromosomeLength) - 1)).reshape(-1,).tolist()# -1<value<1
-    Chromosomes.append(l)
+#or if it is coming from file
+ch = read_chromo(sys.argv[5])
+if (len(ch)>=GA.populationSize):
+    i = len(ch)-1
+    for pop in range(GA.populationSize):
+        l = ch[i].strip('][').split(', ')
+        Chromosomes.append(l)
+        i = i-1
+else:
+    #Initializing chromosomes weights range with values from -1 to 1
+    for pop in range(GA.populationSize):
+        l = numpy.array(GA.weightsRange * (2 * rand(1, GA.chromosomeLength) - 1)).reshape(-1,).tolist()# -1<value<1
+        Chromosomes.append(l)
 
 settings_obj.collison_value()
 
