@@ -88,7 +88,7 @@ def read_chromo(path):
     try:
         outfile = open(path, 'r')
     except IOError:
-        read_lidar(path)
+        read_chromo(path)
     with outfile:
         s = outfile.readlines()
         outfile.close()
@@ -136,8 +136,11 @@ for i in range(GA.nbrOfGenerations_max):
 ch = read_chromo(sys.argv[5])
 if (len(ch)>=GA.populationSize):
     i = len(ch)-1
+    l =[]
     for pop in range(GA.populationSize):
-        l = ch[i].strip('][').split(', ')
+        s=ch[i][:-5]
+        s = s+']'
+        l = eval(s)
         Chromosomes.append(l)
         i = i-1
 else:
@@ -150,4 +153,3 @@ settings_obj.collison_value()
 
 MoveCars(env, settings_obj.nbrOfTimeStepsToTimeout, GA, settings_obj.dt,sensor, car, settings_obj.num,
          settings_obj.smallXYVariance, Chromosomes_Fitness, Chromosomes, settings_obj.NetworkArch, settings_obj.unipolarBipolarSelector, settings_obj.collision_distance)
-
